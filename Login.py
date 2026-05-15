@@ -1,5 +1,5 @@
 """
-Gobrax AWS Billing — tela de login (layout alinhado ao cog.tools.engenharia-assistant).
+Billing dashboard — tela de login (layout alinhado ao cog.tools.engenharia-assistant).
 """
 
 from __future__ import annotations
@@ -10,11 +10,13 @@ from pathlib import Path
 import streamlit as st
 
 from utils.auth import authenticate
+from utils import get_display_name
 
 _ROOT = Path(__file__).resolve().parent
+_ORG = get_display_name()
 
 st.set_page_config(
-    page_title="Login — Gobrax Billing",
+    page_title=f"Login — {_ORG} Billing",
     page_icon="💰",
     layout="centered",
     initial_sidebar_state="collapsed",
