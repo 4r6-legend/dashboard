@@ -9,14 +9,12 @@ from pathlib import Path
 
 import streamlit as st
 
-from utils.auth import authenticate
-from utils import get_display_name
+from dashboard_lib.auth import authenticate
 
 _ROOT = Path(__file__).resolve().parent
-_ORG = get_display_name()
 
 st.set_page_config(
-    page_title=f"Login — {_ORG} Billing",
+    page_title="Billing — Login",
     page_icon="💰",
     layout="centered",
     initial_sidebar_state="collapsed",

@@ -1,4 +1,4 @@
-# Gobrax AWS Billing Dashboard
+# AWS Billing Dashboard
 
 Streamlit + AWS Cost Explorer (`ce`). Acesso ao dashboard exige **login** (bcrypt via Secrets), no estilo da tela de login do projeto interno *engenharia-assistant*.
 
@@ -28,6 +28,15 @@ python -c "import bcrypt; print(bcrypt.hashpw(b'SUA_SENHA', bcrypt.gensalt()).de
 
 Cole o resultado no TOML entre aspas. Sem `[credentials.users]`, ninguém consegue autenticar.
 
+3. **Nome da organização** (obrigatório — títulos e textos do app):
+
+```toml
+[gobrax]
+display_name = "Nome da sua empresa ou conta"
+```
+
+Sem `display_name` preenchido, o app mostra erro e não inicia.
+
 ## Rodar
 
 Recomendado (login primeiro):
@@ -39,4 +48,4 @@ streamlit run Login.py
 
 Também é possível `streamlit run app.py` (redireciona para `Login.py`).
 
-A IAM user/role precisa de `ce:GetCostAndUsage` na conta Gobrax.
+A IAM user/role precisa de permissão para `ce:GetCostAndUsage` na conta AWS usada pelo Cost Explorer.

@@ -4,8 +4,10 @@ import altair as alt
 import boto3
 from datetime import datetime, timedelta
 
+from dashboard_lib import get_file_slug, require_display_name
+
 st.set_page_config(
-    page_title="💰 Gobrax - AWS Billing Dashboard",
+    page_title="AWS Billing Dashboard",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -24,7 +26,10 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.title("💰 Gobrax - AWS Billing Dashboard")
+_ORG = require_display_name()
+_SLUG = get_file_slug()
+
+st.title(f"💰 {_ORG} - AWS Billing Dashboard")
 
 aws_access_key_id = st.secrets["aws"]["aws_access_key_id"]
 aws_secret_access_key = st.secrets["aws"]["aws_secret_access_key"]
@@ -159,7 +164,7 @@ top_service = by_service.idxmax()
 top_service_cost = by_service.max()
 mean_daily = df.groupby("date")["cost"].sum().mean()
 
-st.subheader("🔢 Visão Geral de Custos - Gobrax")
+st.subheader(f"🔢 Visão Geral de Custos - {_ORG}")
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("💸 Custo Total (período)", f"${total_cost:,.2f}")
 col2.metric("🔥 Serviço Mais Caro", top_service)
@@ -370,7 +375,7 @@ with tab_servicos:
             st.download_button(
                 label=f"📥 Download CSV — {detail_service} ({breakdown_dim})",
                 data=df_usage_tot.to_csv(index=False).encode("utf-8"),
-                file_name="gobrax_billing_service_usage_breakdown.csv",
+                file_name=f"{_SLUG}_billing_service_usage_breakdown.csv",
                 mime="text/csv",
                 key=f"dl_usage_{detail_service}_{breakdown_dim}",
             )
@@ -382,7 +387,7 @@ with tab_servicos:
     )
     df_filtered = df[df["service"].isin(selected_services)]
 
-    st.subheader("📈 Custos Diários por Serviço (Gobrax)")
+    st.subheader(f"📈 Custos Diários por Serviço ({_ORG})")
     line_chart = (
         alt.Chart(df_filtered)
         .mark_line()
@@ -397,7 +402,7 @@ with tab_servicos:
     )
     st.altair_chart(line_chart, use_container_width=True)
 
-    st.subheader("📊 Total por Serviço (Gobrax)")
+    st.subheader(f"📊 Total por Serviço ({_ORG})")
     bar_chart = (
         alt.Chart(df_total_by_service)
         .mark_bar()
@@ -411,7 +416,7 @@ with tab_servicos:
     )
     st.altair_chart(bar_chart, use_container_width=True)
 
-    st.subheader("📋 Tabela de Custos por Serviço (Gobrax)")
+    st.subheader(f"📋 Tabela de Custos por Serviço ({_ORG})")
     st.dataframe(
         df_total_by_service.sort_values("cost", ascending=False),
         use_container_width=True,
@@ -420,7 +425,7 @@ with tab_servicos:
     st.download_button(
         label="📥 Download CSV (por serviço)",
         data=df_total_by_service.to_csv(index=False).encode("utf-8"),
-        file_name="gobrax_aws_billing_by_service.csv",
+        file_name=f"{_SLUG}_aws_billing_by_service.csv",
         mime="text/csv",
     )
 
@@ -476,7 +481,7 @@ with tab_regioes:
         st.download_button(
             label="📥 Download CSV (por região)",
             data=df_reg_total.to_csv(index=False).encode("utf-8"),
-            file_name="gobrax_aws_billing_by_region.csv",
+            file_name=f"{_SLUG}_aws_billing_by_region.csv",
             mime="text/csv",
         )
 
